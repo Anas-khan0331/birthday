@@ -253,7 +253,7 @@ export default function MalaikaMagicalBirthday() {
       >
         <FloatingBackground />
         <h2 className="font-serif text-4xl text-[#ff8fa3] mb-16 z-10">
-          Reasons I Love You
+          Reasons We All Love You
         </h2>
 
         {!reasonsRevealed && (
