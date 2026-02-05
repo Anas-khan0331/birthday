@@ -12,6 +12,7 @@ export default function MalaikaMagicalBirthday() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [reasonsRevealed, setReasonsRevealed] = useState(false);
+  const [showFinalMessage, setShowFinalMessage] = useState(false); // New state
 
   const coverRef = useRef(null);
   const cardRef = useRef(null);
@@ -19,6 +20,38 @@ export default function MalaikaMagicalBirthday() {
   const reasonsRef = useRef(null);
   const giftBoxRef = useRef(null);
   const reasonCardsRef = useRef([]);
+
+  // --- NEW SECTION: PROPOSAL LOGIC ---
+  const [proposalCardIdx, setProposalCardIdx] = useState(0);
+  const proposalContainerRef = useRef(null);
+  const proposalCardsRef = useRef([]);
+
+  const proposalData = [
+    {
+      img: "/assets/child.jpg", // <--- ADD YOUR IMAGE HERE
+      title: "I'm sorry...",
+      note: "I was unable to wish you a happy birthday here, because I hadn't met you yet.",
+      isLast: false,
+    },
+    {
+      img: "/assets/younger.png", // <--- ADD YOUR IMAGE HERE
+      title: "But I am here now!",
+      note: "I am wishing you right now, and I want to spend every single birthday from today onwards with you.",
+      isLast: false,
+    },
+    {
+      img: "/assets/family.jpg", // <--- ADD YOUR IMAGE HERE
+      title: "Our Future",
+      note: "I want to wish you happy birthday alongside our children, creating a beautiful family.",
+      isLast: false,
+    },
+    {
+      img: "/assets/older.jpg", // <--- ADD YOUR IMAGE HERE
+      title: "Forever & Always",
+      note: "And I want to hold your hand and wish you a happy birthday, even when you look like this, old and wrinkly, but still deeply in love.",
+      isLast: true, // Mark as last card
+    },
+  ];
 
   const albumData = [
     {
@@ -75,6 +108,15 @@ export default function MalaikaMagicalBirthday() {
     },
   ];
 
+  // --- NEW SECTION: LOVE NOTES ---
+  const [activeNote, setActiveNote] = useState(null);
+  const loveNotes = [
+    "You make my heart flutter.",
+    "Your smile is my daily dose of happiness.",
+    "I'm so proud of you, Malaika.",
+    "Life with you is an adventure.",
+  ];
+
   // --- ANIMATIONS ---
   useEffect(() => {
     // 1. Banner Text Animation
@@ -101,7 +143,6 @@ export default function MalaikaMagicalBirthday() {
   // --- FLOATING ICONS GENERATOR (Per Section) ---
   const FloatingBackground = () => {
     const icons = ["🎈", "❤️", "💖", "🧸", "🌸", "✨"];
-    // Generate a unique set of items for each section to make it feel natural
     const items = useMemo(() => {
       return Array.from({ length: 25 }).map((_, i) => ({
         id: i,
@@ -139,8 +180,6 @@ export default function MalaikaMagicalBirthday() {
     setReasonsRevealed(true);
 
     const tl = gsap.timeline();
-
-    // 1. Gift box bounces, then shrinks
     tl.to(giftBoxRef.current, { scale: 1.2, duration: 0.2, ease: "power2.in" })
       .to(giftBoxRef.current, {
         scale: 0,
@@ -149,7 +188,6 @@ export default function MalaikaMagicalBirthday() {
         ease: "back.in(1.5)",
       })
       .call(() => {
-        // Confetti burst
         import("canvas-confetti").then((c) =>
           c.default({
             particleCount: 150,
@@ -160,7 +198,6 @@ export default function MalaikaMagicalBirthday() {
           }),
         );
       })
-      // 2. Cards fly out
       .fromTo(
         reasonCardsRef.current,
         { scale: 0, opacity: 0, y: 100 },
@@ -173,6 +210,45 @@ export default function MalaikaMagicalBirthday() {
           ease: "elastic.out(1, 0.5)",
         },
       );
+  };
+
+  // --- NEW SECTION: PROPOSAL ANIMATION ---
+  const handleProposalClick = (index) => {
+    if (index !== proposalCardIdx) return;
+
+    if (proposalData[index].isLast) {
+      // Last card behavior: Trigger Final Message
+      gsap.to(proposalCardsRef.current[index], {
+        scale: 0,
+        opacity: 0,
+        duration: 0.5,
+        ease: "back.in",
+        onComplete: () => {
+          setShowFinalMessage(true);
+          // Trigger confetti on final message
+          import("canvas-confetti").then((c) =>
+            c.default({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ["#ff8fa3", "#ff4d6d"],
+            }),
+          );
+        },
+      });
+    } else {
+      // Regular card behavior: Animate off-screen
+      gsap.to(proposalCardsRef.current[index], {
+        x: -window.innerWidth,
+        rotate: -30,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.in",
+        onComplete: () => {
+          setProposalCardIdx(index + 1);
+        },
+      });
+    }
   };
 
   // --- ALBUM LOGIC ---
@@ -232,6 +308,7 @@ export default function MalaikaMagicalBirthday() {
 
   return (
     <div className="bg-[#fff5f6] font-sans overflow-x-hidden text-[#8b7373]">
+      {/* 1. BANNER */}
       <section className="min-h-screen w-full flex flex-col items-center justify-center bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#ffe4e8_100%)] p-6 relative overflow-hidden">
         <FloatingBackground />
         <h1
@@ -247,6 +324,8 @@ export default function MalaikaMagicalBirthday() {
           WHY YOU ARE SPECIAL 💖
         </button>
       </section>
+
+      {/* 2. REASONS WHY */}
       <section
         ref={reasonsRef}
         className="min-h-screen w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] relative overflow-hidden"
@@ -255,7 +334,6 @@ export default function MalaikaMagicalBirthday() {
         <h2 className="font-serif text-4xl text-[#ff8fa3] mb-16 z-10">
           Reasons We All Love You
         </h2>
-
         {!reasonsRevealed && (
           <div
             ref={giftBoxRef}
@@ -270,7 +348,6 @@ export default function MalaikaMagicalBirthday() {
             </p>
           </div>
         )}
-
         <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-7xl z-10">
           {reasons.map((reason, i) => (
             <div
@@ -302,8 +379,7 @@ export default function MalaikaMagicalBirthday() {
           ))}
         </div>
       </section>
-
-      {/* 3. ALBUM SECTION */}
+      {/* 4. ALBUM */}
       <section
         id="album-section"
         className="min-h-screen w-full flex items-center justify-center relative p-6 bg-[#fff5f6] overflow-hidden"
@@ -327,7 +403,7 @@ export default function MalaikaMagicalBirthday() {
                 onClick={nextMemory}
                 className="bg-pink-50 text-[#ff8fa3] px-6 py-2 rounded-full text-xs font-bold border border-pink-100 hover:bg-pink-100 transition-colors"
               >
-                NEXT MEMORY 🌸
+                NEXT WISH 🌸
               </button>
               <div className="mt-4 text-xs text-gray-300 font-bold">
                 {currentIdx + 1} / {albumData.length}
@@ -365,15 +441,103 @@ export default function MalaikaMagicalBirthday() {
                   <span className="text-[150px] block mb-2">
                     {albumData[currentIdx].backIcon}
                   </span>
-                  {/* <p className="font-serif text-[#a67c7c] text-5xl">My World</p> */}
                 </div>
               </div>
             </div>
           </div>
         </main>
       </section>
+      {/* 5. NEW SECTION: DIGITAL JAR */}
+      <section className="min-h-screen w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] relative overflow-hidden">
+        <FloatingBackground />
+        <h2 className="font-serif text-4xl text-[#ff8fa3] mb-16 z-10">
+          A Note For You
+        </h2>
+        <div className="z-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {loveNotes.map((note, index) => (
+            <div
+              key={index}
+              onClick={() => setActiveNote(activeNote === index ? null : index)}
+              className="cursor-pointer bg-white p-6 rounded-2xl shadow-lg text-center hover:scale-105 transition-all duration-300 w-40 h-40 flex items-center justify-center"
+            >
+              {activeNote === index ? (
+                <p className="text-sm text-[#8b7373] font-medium">{note}</p>
+              ) : (
+                <span className="text-5xl">💌</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+      {/* 3. NEW SECTION: PROPOSAL */}
+      <section className="min-h-screen w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] relative overflow-hidden">
+        <FloatingBackground />
+        <h2 className="font-serif text-4xl text-[#ff8fa3] mb-16 z-10 text-center">
+          A Lifetime of Wishes
+        </h2>
 
-      {/* 4. PROMISES SECTION */}
+        <div
+          ref={proposalContainerRef}
+          className="relative w-[320px] h-[500px] z-10"
+        >
+          {/* Final Message Area */}
+          {showFinalMessage && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white p-6 rounded-3xl shadow-2xl border-4 border-pink-100 text-center animate-fadeIn">
+              <img
+                src="/assets/cat2.jpg" // <--- ADD YOUR FINAL IMAGE HERE
+                alt="Final Moment"
+                className="w-48 h-48 rounded-full object-cover object-center mb-6 border-4 border-white shadow-lg"
+              />
+              <p className="font-serif text-5xl text-[#ff8fa3] leading-relaxed">
+                bs bs itna kaafi hai
+              </p>
+            </div>
+          )}
+
+          {/* Card Deck */}
+          {!showFinalMessage &&
+            proposalData.map((card, index) => (
+              <div
+                key={index}
+                ref={(el) => (proposalCardsRef.current[index] = el)}
+                onClick={() => handleProposalClick(index)}
+                className={`absolute w-full h-full bg-white p-6 rounded-3xl shadow-2xl border-4 border-white cursor-pointer select-none transition-all duration-300
+                ${index === proposalCardIdx ? "opacity-100 scale-100" : "opacity-0 scale-95"}
+                ${index < proposalCardIdx ? "hidden" : ""}
+              `}
+                style={{
+                  zIndex: proposalData.length - index,
+                  transform:
+                    index === proposalCardIdx
+                      ? "translateY(0)"
+                      : "translateY(20px)",
+                }}
+              >
+                <div className="w-full h-64 rounded-2xl overflow-hidden mb-6 shadow-inner">
+                  <img
+                    src={card.img}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <h3 className="font-serif text-3xl text-[#ff8fa3] mb-3 text-center">
+                  {card.title}
+                </h3>
+                <p className="text-[#8b7373] text-center leading-relaxed font-medium">
+                  {card.note}
+                </p>
+                {index === proposalCardIdx &&
+                  index < proposalData.length - 1 && (
+                    <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-pink-300 animate-pulse">
+                      Click card to continue...
+                    </p>
+                  )}
+              </div>
+            ))}
+        </div>
+      </section>
+
+      {/* 6. PROMISES */}
       <section className="min-h-[50vh] w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] text-center">
         <FloatingBackground />
         <h2 className="font-serif text-4xl text-[#ff8fa3] mb-10 z-10">
@@ -384,7 +548,12 @@ export default function MalaikaMagicalBirthday() {
           support your dreams, and love you more with every passing day."
         </p>
       </section>
-
+      <section className="min-h-[4vh] w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] text-center">
+        <FloatingBackground />
+        <h2 className="font-serif text-4xl text-[#ff8fa3] mb-10 z-10">
+          All Rights Reserved by Malaika & Credit Goes To @Muqaddass Rafique 😊
+        </h2>
+      </section>
       <style jsx global>{`
         @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap");
         .font-serif {
@@ -423,6 +592,19 @@ export default function MalaikaMagicalBirthday() {
         }
         .animate-hoverAndPulse {
           animation: hoverAndPulse 2s ease-in-out infinite;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.8s ease-out forwards;
         }
       `}</style>
     </div>
