@@ -41,7 +41,7 @@ export default function MalaikaMagicalBirthday() {
     },
     {
       img: "/assets/family.jpg", // <--- ADD YOUR IMAGE HERE
-      title: "Our Future",
+      title: "In Future",
       note: "I want to wish you happy birthday alongside our children, creating a beautiful family.",
       isLast: false,
     },
