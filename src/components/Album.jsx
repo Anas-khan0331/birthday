@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-// Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -12,44 +11,41 @@ export default function MalaikaMagicalBirthday() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [reasonsRevealed, setReasonsRevealed] = useState(false);
-  const [showFinalMessage, setShowFinalMessage] = useState(false); // New state
-
+  const [showFinalMessage, setShowFinalMessage] = useState(false);
   const coverRef = useRef(null);
   const cardRef = useRef(null);
   const bannerTextRef = useRef(null);
   const reasonsRef = useRef(null);
   const giftBoxRef = useRef(null);
   const reasonCardsRef = useRef([]);
-
-  // --- NEW SECTION: PROPOSAL LOGIC ---
   const [proposalCardIdx, setProposalCardIdx] = useState(0);
   const proposalContainerRef = useRef(null);
   const proposalCardsRef = useRef([]);
 
   const proposalData = [
     {
-      img: "/assets/child.jpg", // <--- ADD YOUR IMAGE HERE
+      img: "/assets/child.jpg",
       title: "I'm sorry...",
       note: "I was unable to wish you a happy birthday here, because I hadn't met you yet.",
       isLast: false,
     },
     {
-      img: "/assets/younger.png", // <--- ADD YOUR IMAGE HERE
+      img: "/assets/younger.png",
       title: "But I am here now!",
       note: "I am wishing you right now, and I want to spend every single birthday from today onwards with you.",
       isLast: false,
     },
     {
-      img: "/assets/family.jpg", // <--- ADD YOUR IMAGE HERE
+      img: "/assets/family.jpg",
       title: "In Future",
       note: "I want to wish you happy birthday alongside our children, creating a beautiful family.",
       isLast: false,
     },
     {
-      img: "/assets/older.jpg", // <--- ADD YOUR IMAGE HERE
+      img: "/assets/older.jpg",
       title: "Forever & Always",
       note: "And I want to hold your hand and wish you a happy birthday, even when you look like this, old and wrinkly, but still deeply in love.",
-      isLast: true, // Mark as last card
+      isLast: true,
     },
   ];
 
@@ -74,7 +70,6 @@ export default function MalaikaMagicalBirthday() {
     },
   ];
 
-  // --- 5 REASONS WITH LOCAL ASSETS ---
   const reasons = [
     {
       img: "/assets/1.jpeg",
@@ -108,7 +103,6 @@ export default function MalaikaMagicalBirthday() {
     },
   ];
 
-  // --- NEW SECTION: LOVE NOTES ---
   const [activeNote, setActiveNote] = useState(null);
   const loveNotes = [
     "You make my heart flutter.",
@@ -117,9 +111,7 @@ export default function MalaikaMagicalBirthday() {
     "Life with you is an adventure.",
   ];
 
-  // --- ANIMATIONS ---
   useEffect(() => {
-    // 1. Banner Text Animation
     const text = "Happy Birthday, Malaika! ✨";
     const letters = text.split("");
     bannerTextRef.current.innerHTML = "";
@@ -140,7 +132,6 @@ export default function MalaikaMagicalBirthday() {
     });
   }, []);
 
-  // --- FLOATING ICONS GENERATOR (Per Section) ---
   const FloatingBackground = () => {
     const icons = ["🎈", "❤️", "💖", "🧸", "🌸", "✨"];
     const items = useMemo(() => {
@@ -174,7 +165,6 @@ export default function MalaikaMagicalBirthday() {
     );
   };
 
-  // --- INTERACTIVE REVEAL ANIMATION ---
   const revealReasons = () => {
     if (reasonsRevealed) return;
     setReasonsRevealed(true);
@@ -548,10 +538,11 @@ export default function MalaikaMagicalBirthday() {
           support your dreams, and love you more with every passing day."
         </p>
       </section>
-      <section className="min-h-[4vh] w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] text-center">
+      <section className="min-h-[4vh] max-w-[700px]  mx-auto w-full flex flex-col items-center justify-center p-10 bg-[#fff5f6] text-center">
         <FloatingBackground />
-        <h2 className="font-serif text-4xl text-[#ff8fa3] mb-10 z-10">
-          All Rights Reserved by Malaika & Credit Goes To @Muqaddass Rafique 😊
+        <h2 className="font-serif text-4xl text-[#ff8fa3] mb-10 z-10 leading-14">
+          All Rights Reserved by Miss Malaika & Credit Goes To Bajo @Muqaddass
+          Rafique 😊
         </h2>
       </section>
       <style jsx global>{`
